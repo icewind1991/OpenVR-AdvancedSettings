@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg8">
+  <defs
+     id="defs2">
+    <rect
+       x="43.277892"
+       y="36.927076"
+       width="23.295368"
+       height="30.546571"
+       id="rect1983" />
+    <marker
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path1440"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#ffffff;stroke-width:1pt;stroke-opacity:1;fill:#ffffff;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path1437"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#ffffff;stroke-width:1pt;stroke-opacity:1;fill:#ffffff;fill-opacity:1"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <rect
+     y="17.717316"
+     x="17.717316"
+     height="64.565376"
+     width="64.565376"
+     id="rect1404"
+     style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:5.0000958;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5" />
+  <text
+     y="-87.638542"
+     x="-96.653877"
+     transform="scale(0.9999973,1.0000027)"
+     style="font-style:normal;font-weight:normal;font-size:44.66781998px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1983);fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.81372094;"
+     id="text1981"
+     xml:space="preserve"><tspan
+       style="visibility:hidden"
+       x="43.277344"
+       y="106.99516"><tspan
+         style="font-size:44.6678px;fill:#ffffff;fill-opacity:1;stroke-width:2.81372">A</tspan></tspan></text>
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:5.48831;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 15.213542,17.717315 H 84.666666"
+     id="path880" />
+  <circle
+     style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:5.0001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path868"
+     cx="17.717316"
+     cy="17.717316"
+     r="8.0993071" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:5.48831;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 15.213542,82.119154 H 84.666666"
+     id="path880-3" />
+  <circle
+     style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:5.0001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path868-6"
+     cx="82.036858"
+     cy="17.21394"
+     r="8.0993071" />
+  <circle
+     style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:5.0001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path868-6-7"
+     cx="17.21394"
+     cy="82.036858"
+     r="8.0993071" />
+  <circle
+     style="fill:none;fill-opacity:1;stroke:#ff000f;stroke-width:5.0001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path868-6-7-5"
+     cx="82.036858"
+     cy="82.036858"
+     r="8.0993071" />
+</svg>

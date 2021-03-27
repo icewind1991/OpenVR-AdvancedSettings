@@ -158,7 +158,7 @@ private:
     bool m_moveShortcutRightPressed = false;
     bool m_moveShortcutLeftPressed = false;
     vr::TrackedDeviceIndex_t m_activeMoveController;
-    float m_lastControllerPosition[3];
+    vr::HmdVector3_t m_lastControllerPosition;
     bool m_heightToggle = false;
     float m_gravityFloor = 0.0f;
     // Set lastHandQuaternion.w to -1000.0 when last hand is invalid.
@@ -227,7 +227,7 @@ private:
 
     void updateHmdRotationCounter( vr::TrackedDevicePose_t hmdPose,
                                    double angle );
-    void updateHandDrag( vr::TrackedDevicePose_t* devicePoses, double angle );
+    void updateHandDrag( vr::TrackedDevicePose_t* devicePoses );
     void updateHandTurn( vr::TrackedDevicePose_t* devicePoses, double angle );
     void updateGravity();
     void updateSpace( bool forceUpdate = false );
@@ -283,6 +283,16 @@ public:
     void incomingSeatedReset();
     void setBoundsBasisHeight( float newHeight );
     float getBoundsBasisMaxY();
+    void setRotationAroundPivot( int value,
+                                 bool notify,
+                                 const vr::HmdVector3_t& pivot );
+    void displaceUniverse( const vr::HmdVector3_t& from,
+                           const vr::HmdVector3_t& to );
+
+    vr::HmdVector3_t
+        relativeToAbsolute( const vr::HmdVector3_t& coordinates_in ) const;
+    vr::HmdVector3_t
+        absoluteToRelative( const vr::HmdVector3_t& absolute ) const;
 
     void updateChaperoneResetData();
 

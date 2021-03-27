@@ -755,6 +755,14 @@ void OverlayController::processRotationBindings()
         m_rotationTabController.setAutoTurnEnabled(
             !( m_rotationTabController.autoTurnEnabled() ) );
     }
+    if ( m_actions.addAutoAlignPointLeft() )
+    {
+        m_rotationTabController.addAutoAlignPoint( false );
+    }
+    if ( m_actions.addAutoAlignPointRight() )
+    {
+        m_rotationTabController.addAutoAlignPoint( true );
+    }
 }
 /*!
 Checks if an action has been activated and dispatches the related action if

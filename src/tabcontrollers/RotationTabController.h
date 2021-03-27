@@ -101,6 +101,10 @@ private:
         vr::VROverlayHandle_t overlayHandle = vr::k_ulOverlayHandleInvalid;
         std::string autoturnPath;
         std::string noautoturnPath;
+        std::string alignPointOnePath;
+        std::string alignPointTwoPath;
+        std::string alignPointThreePath;
+        std::string alignPointFourPath;
     } m_autoturnValues;
 
     virtual vr::VROverlayHandle_t getNotificationOverlayHandle()
@@ -120,6 +124,9 @@ private:
 
     std::optional<std::chrono::steady_clock::time_point>
         m_autoTurnNotificationTimestamp;
+
+    std::vector<vr::HmdVector3_t> autoAlignPoints;
+    vr::TrackedDevicePose_t lastLeftHandPose, lastRightHandPose;
 
     bool m_isHMDActive = false;
 
@@ -170,6 +177,9 @@ public slots:
     void setVestibularMotionRadius( double value, bool notify = true );
     void setViewRatchettingEnabled( bool value, bool notify = true );
     void setViewRatchettingPercent( double value, bool notify = true );
+
+    // Experimental - auto-align
+    void addAutoAlignPoint( bool rightHanded );
 
 signals:
 

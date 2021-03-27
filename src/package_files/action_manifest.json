@@ -163,7 +163,16 @@
       "requirement": "optional",
       "type": "boolean"
     },
-    
+    {
+      "name": "/actions/motion/in/AddAutoAlignPointLeft",
+      "requirement": "optional",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/motion/in/AddAutoAlignPointRight",
+      "requirement": "optional",
+      "type": "boolean"
+    },
     {
       "name": "/actions/misc/in/XAxisLockToggle",
       "requirement": "optional",
@@ -288,6 +297,8 @@
         "/actions/motion/in/SmoothTurnLeft" : "Smooth-Turn Left",
         "/actions/motion/in/SmoothTurnRight" : "Smooth-Turn Right",
 		"/actions/motion/in/AutoTurnToggle" : "Auto-Turn Toggle",
+        "/actions/motion/in/AddAutoAlignPointLeft" : "Add Auto Align Point (Left Hand)",
+        "/actions/motion/in/AddAutoAlignPointRight" : "Add Auto Align Point (Right Hand)",
         
         "/actions/misc/in/XAxisLockToggle" : "X-Axis Lock Toggle",
         "/actions/misc/in/YAxisLockToggle" : "Y-Axis Lock Toggle",

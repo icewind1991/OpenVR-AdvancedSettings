@@ -38,11 +38,27 @@ void RotationTabController::initStage2( OverlayController* var_parent )
 
     constexpr auto autoturnIconFilepath = "/res/img/rotation/autoturn.png";
     constexpr auto noautoturnIconFilepath = "/res/img/rotation/noautoturn.png";
+    constexpr auto alignPointOneIconFilepath
+        = "/res/img/rotation/autoalign1.png";
+    constexpr auto alignPointTwoIconFilepath
+        = "/res/img/rotation/autoalign2.png";
+    constexpr auto alignPointThreeIconFilepath
+        = "/res/img/rotation/autoalign3.png";
+    constexpr auto alignPointFourIconFilepath
+        = "/res/img/rotation/autoalign4.png";
 
     const auto autoturnIconFilePath
         = paths::verifyIconFilePath( autoturnIconFilepath );
     const auto noautoturnIconFilePath
         = paths::verifyIconFilePath( noautoturnIconFilepath );
+    const auto alignPointOneIconFilePath
+        = paths::verifyIconFilePath( alignPointOneIconFilepath );
+    const auto alignPointTwoIconFilePath
+        = paths::verifyIconFilePath( alignPointTwoIconFilepath );
+    const auto alignPointThreeIconFilePath
+        = paths::verifyIconFilePath( alignPointThreeIconFilepath );
+    const auto alignPointFourIconFilePath
+        = paths::verifyIconFilePath( alignPointFourIconFilepath );
 
     if ( !autoturnIconFilePath.has_value()
          || !noautoturnIconFilePath.has_value() )
@@ -53,6 +69,10 @@ void RotationTabController::initStage2( OverlayController* var_parent )
 
     m_autoturnValues.autoturnPath = *autoturnIconFilePath;
     m_autoturnValues.noautoturnPath = *noautoturnIconFilePath;
+    m_autoturnValues.alignPointOnePath = *alignPointOneIconFilePath;
+    m_autoturnValues.alignPointTwoPath = *alignPointTwoIconFilePath;
+    m_autoturnValues.alignPointThreePath = *alignPointThreeIconFilePath;
+    m_autoturnValues.alignPointFourPath = *alignPointFourIconFilePath;
 
     auto pushToPath = m_autoturnValues.autoturnPath.c_str();
 
@@ -79,6 +99,27 @@ void RotationTabController::eventLoopTick(
 {
     if ( devicePoses )
     {
+        auto leftHandId
+            = vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(
+                vr::TrackedControllerRole_LeftHand );
+        if ( vr::k_unTrackedDeviceIndexInvalid
+             && devicePoses[leftHandId].bPoseIsValid
+             && devicePoses[leftHandId].eTrackingResult
+                    == vr::TrackingResult_Running_OK )
+        {
+            lastLeftHandPose = devicePoses[leftHandId];
+        }
+        auto rightHandId
+            = vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(
+                vr::TrackedControllerRole_RightHand );
+        if ( vr::k_unTrackedDeviceIndexInvalid
+             && devicePoses[rightHandId].bPoseIsValid
+             && devicePoses[rightHandId].eTrackingResult
+                    == vr::TrackingResult_Running_OK )
+        {
+            lastRightHandPose = devicePoses[rightHandId];
+        }
+
         m_isHMDActive = false;
         std::lock_guard<std::recursive_mutex> lock(
             parent->chaperoneUtils().mutex() );
@@ -578,6 +619,104 @@ void RotationTabController::doAutoTurn(
     }
 }
 
+void RotationTabController::addAutoAlignPoint( bool rightHanded )
+{
+    // TODO: State machine: if we have >2 align points, freeze vestibular
+    // motion/ratchetting/etc remain frozen until after we move away from the
+    // aligned area
+    const auto& lastHandPose
+        = rightHanded ? lastRightHandPose : lastLeftHandPose;
+
+    LOG( DEBUG ) << "point added: " << autoAlignPoints.size();
+    // get the location of hand, push_back onto autoAlignPoints
+    vr::HmdVector3_t new_point
+        = { lastHandPose.mDeviceToAbsoluteTracking.m[0][3],
+            lastHandPose.mDeviceToAbsoluteTracking.m[1][3],
+            lastHandPose.mDeviceToAbsoluteTracking.m[2][3] };
+    // TODO: Probably smarter to actually just keep the virtual points as
+    // virtual until we use them. Then if they drift we don't care.
+    vr::HmdVector3_t absolute_point
+        = parent->m_moveCenterTabController.relativeToAbsolute( new_point );
+    autoAlignPoints.push_back( absolute_point );
+
+    switch ( autoAlignPoints.size() )
+    {
+    case 1:
+        vr::VROverlay()->SetOverlayFromFile(
+            m_autoturnValues.overlayHandle,
+            m_autoturnValues.alignPointOnePath.c_str() );
+        break;
+    case 2:
+        vr::VROverlay()->SetOverlayFromFile(
+            m_autoturnValues.overlayHandle,
+            m_autoturnValues.alignPointTwoPath.c_str() );
+        break;
+    case 3:
+        vr::VROverlay()->SetOverlayFromFile(
+            m_autoturnValues.overlayHandle,
+            m_autoturnValues.alignPointThreePath.c_str() );
+        break;
+    case 4:
+        vr::VROverlay()->SetOverlayFromFile(
+            m_autoturnValues.overlayHandle,
+            m_autoturnValues.alignPointFourPath.c_str() );
+        break;
+    }
+
+    // TODO: configure whether auto-align has HUD popup independently
+    if ( autoTurnShowNotification()
+         && getNotificationOverlayHandle() != vr::k_ulOverlayHandleInvalid )
+    {
+        vr::VROverlay()->SetOverlayAlpha( getNotificationOverlayHandle(),
+                                          1.0f );
+        vr::VROverlay()->ShowOverlay( getNotificationOverlayHandle() );
+        m_autoTurnNotificationTimestamp.emplace(
+            std::chrono::steady_clock::now() );
+    }
+
+    // if we have exactly 4 points, go into main loop
+    if ( autoAlignPoints.size() == 4 )
+    {
+        vr::HmdVector3_t realFirstPoint = autoAlignPoints[0];
+        vr::HmdVector3_t realSecondPoint = autoAlignPoints[1];
+        vr::HmdVector3_t virtualFirstPoint = autoAlignPoints[2];
+        vr::HmdVector3_t virtualSecondPoint = autoAlignPoints[3];
+
+        // Rotate the universe to align, pivoting around the real point
+        double realEdgeAngle = static_cast<double>(
+            std::atan2( realFirstPoint.v[0] - realSecondPoint.v[0],
+                        realFirstPoint.v[2] - realSecondPoint.v[2] ) );
+        double virtualEdgeAngle = static_cast<double>(
+            std::atan2( virtualFirstPoint.v[0] - virtualSecondPoint.v[0],
+                        virtualFirstPoint.v[2] - virtualSecondPoint.v[2] ) );
+        double delta_degrees
+            = ( realEdgeAngle - virtualEdgeAngle ) * k_radiansToCentidegrees;
+        int newRotationAngleDeg = static_cast<int>(
+            parent->m_moveCenterTabController.rotation() + delta_degrees );
+
+        // these need to be in the new, offset position. TODO: needs to be
+        // converted into new relative position?
+        vr::HmdVector3_t autoAlignPivot = realFirstPoint;
+        autoAlignPivot.v[0] -= realFirstPoint.v[0] - virtualFirstPoint.v[0];
+        autoAlignPivot.v[1] -= realFirstPoint.v[1] - virtualFirstPoint.v[1];
+        autoAlignPivot.v[2] -= realFirstPoint.v[2] - virtualFirstPoint.v[2];
+
+        // TODO: if centered, use the center of both points as the pivot
+        parent->m_moveCenterTabController.setRotationAroundPivot(
+            newRotationAngleDeg,
+            true,
+            parent->m_moveCenterTabController.absoluteToRelative(
+                virtualFirstPoint ) );
+
+        // Align the first of VR points (points[2]) with the first of the real
+        // points (points[0]) purely in position
+        parent->m_moveCenterTabController.displaceUniverse( virtualFirstPoint,
+                                                            realFirstPoint );
+
+        // end of main loop, clear autoAlignPoints
+        autoAlignPoints.clear();
+    }
+}
 // getters
 
 bool RotationTabController::autoTurnEnabled() const
